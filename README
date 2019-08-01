@@ -1,0 +1,103 @@
+Everything Works...I think. Read these notes for the exceptions.
+
+*Tried using "vi" and "valgrind" as arguments. This caused some weird behavior.
+vi prints a warning about the output not being a terminal and does not work. As
+these are programs and not commands, I believe this functionally is outside the
+scope of the assignment and thus is not a problem. (vi breaks everything).
+
+*Also does not handle "&", "|", ">", or "<". I believe this is outside the scope
+of the assignment and I have not implemented functionallity for it.
+
+*"ls" prints out a single column. Not sure what to do about that. There are
+new lines in the output, but I did not put them there.
+
+*the "clear" command will clear the terminal of the client. I'm not sure how it
+works. Not a problem, I just thought it was is neat.
+
+*I made the assumption that no argument would be longer than 100 characters.
+
+*"top" works (displays) but you can't interact with it. ctrl-C to quit
+
+
+                             /*/**/ Client /**/*/
+-------------------------------------------------------------------------------
+Valgrind reports 0 errors and 0 memory leaks in every case test (see below).
+
+*even when using commands like "yes" which have to be stopped with ctrl-C,
+there are no leaks.
+
+Error handling (exit with no leaks) for:
+	incorrect input (usage)
+	socket()
+	connect()
+
+No/minimal error handling for:
+	free()
+	malloc()
+	read()
+	sprintf()
+	write()
+
+return values
+	0 - successful completion
+	1 - wrong syntax
+	2 - failed to create socket
+	3 - connection failed
+
+                             /*/**/ Server /**/*/
+-------------------------------------------------------------------------------
+Valgrind reports 0 errors and 0 memory leaks in every case test (see below).
+
+Error handling (exit with no leaks) for:
+	fork()
+	dup2()
+	execvp()
+	socket()
+	bind()
+	listen()
+
+No/minimal error handling for:
+	free()
+	malloc()
+	sprintf()
+	write()
+	close()
+
+return values
+	1 - a call to fork() failed   (process terminates)
+	2 - a call to dup2() failed   (child terminates)
+	3 - a call to execvp() failed (child terminates)
+	4 - failed to create socket   (process terminates)
+	5 - a call to bind() failed   (process terminates)
+	6 - a call to listen() failed (process terminates)
+
+
+
+                          /*/**/ Test Commands /**/*/
+-------------------------------------------------------------------------------
+	echo $SHELL
+	ls
+	ls -a
+	ls -l
+	ls -la
+	cd ..
+	ps
+	cat test.txt    (test.txt exist)
+	cat t.txt       (t.txt does not exist)
+	df
+	man ls
+	ls -0           (not a valid argument)
+	du
+	du -b -c -l
+	du -bcl
+	ping
+	yes
+	clear
+	ps -e
+	top
+	who
+	who -b -d --login -p -r -t -T -u
+	ls-a            (not a valid command)
+	ls-la           (not a valid command)
+
+
